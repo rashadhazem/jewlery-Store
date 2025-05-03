@@ -11,7 +11,8 @@ import {
   Tooltip,
   Modal,
   Fade,
-  Backdrop
+  Backdrop,
+  Grid
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InfoIcon from '@mui/icons-material/Info';
@@ -20,7 +21,7 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import LayersIcon from '@mui/icons-material/Layers';
 import ScaleIcon from '@mui/icons-material/Scale';
 import { getProductById,createOrder } from '../utils/apiService';
-
+import { toast } from 'react-toastify';
 const modalStyle = {
   position: 'absolute',
   top: '50%',
@@ -90,17 +91,24 @@ const CartItem = ({ item, onRemove, onQuantityChange }) => {
         paymentMethod,
       };
       console.log(orderData);
-      const res = await createOrder({
+      const res = await createOrder(
        orderData
-      });
+      );
       console.log(res);
-      if (!res.ok) throw new Error('Failed to submit order');
-  
-      alert('Order placed successfully!');
+      if(res.status===200 || res.status ===201){
+         toast.success("The order is done");
+      }else if(res.status===400) {
+           toast.error(" Insufficient stock for product");
+      }
+      else{
+        throw new Error('Failed to submit order');
+      }
       handleCloseOrder();
     } catch (err) {
+     
       console.error('Order error:', err);
-      alert('Error placing order.');
+      toast.error(" Insufficient stock for product");
+      handleCloseOrder();
     }
   };
   
@@ -180,71 +188,99 @@ const CartItem = ({ item, onRemove, onQuantityChange }) => {
   BackdropProps={{ timeout: 500 }}
 >
   <Fade in={openModalForOrder}>
-    <Box sx={modalStyle}>
+    <Box sx={{
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: 500,
+      bgcolor: 'background.paper',
+      borderRadius: 2,
+      boxShadow: 24,
+      p: 4,
+    }}>
       {product ? (
         <>
-          <Typography variant="h5" mb={2}>Order Product</Typography>
+          {/* زر الإغلاق */}
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              onClick={handleCloseOrder}
+              size="small"
+              color="error"
+              variant="outlined"
+            >
+              Close
+            </Button>
+          </Box>
 
-          {/* العنوان */}
-          <TextField
-            fullWidth
-            label="Street"
-            margin="normal"
-            required
-            value={street}
-            onChange={(e) => setStreet(e.target.value)}
-          />
-          <TextField
-            fullWidth
-            label="City"
-            margin="normal"
-            required
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-          />
-          <TextField
-            fullWidth
-            label="State"
-            margin="normal"
-            required
-            value={state}
-            onChange={(e) => setState(e.target.value)}
-          />
-          <TextField
-            fullWidth
-            label="Postal Code"
-            margin="normal"
-            required
-            value={postalCode}
-            onChange={(e) => setPostalCode(e.target.value)}
-          />
-          <TextField
-            fullWidth
-            label="Country"
-            margin="normal"
-            required
-            value={country}
-            onChange={(e) => setCountry(e.target.value)}
-          />
+          <Typography variant="h5" mb={2} textAlign="center">Order Product</Typography>
 
-          {/* وسيلة الدفع */}
-          <TextField
-            select
-            fullWidth
-            label="Payment Method"
-            margin="normal"
-            value={paymentMethod}
-            onChange={(e) => setPaymentMethod(e.target.value)}
-            SelectProps={{ native: true }}
-          >
-            <option value="">Select Method</option>
-            <option value="credit_card">Credit Card</option>
-            <option value="paypal">PayPal</option>
-            <option value="bank_transfer">Bank Transfer</option>
-            <option value="cash">Cash</option>
-          </TextField>
+          {/* الفورم */}
+          <Grid container spacing={4}>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="Street"
+                required
+                value={street}
+                onChange={(e) => setStreet(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="City"
+                required
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="State"
+                required
+                value={state}
+                onChange={(e) => setState(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="Postal Code"
+                required
+                value={postalCode}
+                onChange={(e) => setPostalCode(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                fullWidth
+                label="Country"
+                required
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                select
+                fullWidth
+                label="Payment Method"
+                value={paymentMethod}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+                SelectProps={{ native: true }}
+              >
+                
+                <option value="credit_card">Credit Card</option>
+                <option value="paypal">PayPal</option>
+                <option value="bank_transfer">Bank Transfer</option>
+                <option value="cash">Cash</option>
+              </TextField>
+            </Grid>
+          </Grid>
 
-          {/* زرار إرسال */}
+          {/* زر الإرسال */}
           <Box sx={{ textAlign: 'center', mt: 3 }}>
             <Button
               variant="contained"
@@ -262,6 +298,7 @@ const CartItem = ({ item, onRemove, onQuantityChange }) => {
     </Box>
   </Fade>
 </Modal>
+
 
       {/* Modal لعرض التفاصيل وطلب المنتج */}
       <Modal
