@@ -19,10 +19,11 @@ const Cart = () => {
   const handleRemove = async (productId) => {
     try {
       const res = await removeFromCart({ productId });
+      console.log("Response from removeFromCart:", res);
       if (res) {
         toast.success("Product removed successfully from cart");
       }
-      setCartItems((prev) => prev.filter((item) => item._id !== productId));
+    
     } catch (err) {
       console.error('Error removing item:', err);
     }

@@ -16,8 +16,10 @@ export const getProductById = async (id) => {
  return response.data;
 }
 
-
-
+ export const getProductByName = async (name) => {
+  const response=await axios.get('/products/search', { params: { name } });
+  return response.data;
+ }
 
 export const filterProducts = async (filters = {}) => {
   const { name, category, minPrice, maxPrice } = filters;
@@ -101,6 +103,9 @@ export const getOrderById = async(orderId) => {
   const response=await axios.get(`/orders/${orderId}`);
   return response.data;
 }
+
+
+
 //✅ category 
 export const getAllCategories=async()=>{
   const response=await axios.get('/categories');
@@ -114,6 +119,69 @@ export const getProductByCategoryName=async(name)=>{
 
 
 // ✅ Dashboard (Admin only)
-export const getDashboardStats = () => axios.get('/dashboard');
-export const getAllOrders = () => axios.get('/orders/all');
+
+export const getAdminDashboardStats = async () => {
+  const token = localStorage.getItem('token'); // أو حسب المكان اللي مخزن فيه التوكن
+  const res = await axios.get('/admin/stats', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+  return res;
+}
+export const getAllUsers = async() => {
+  const  response= await axios.get('/admin/users/');
+return response.data;
+}
+export const getAllOrders = async() => {
+  const  response= await axios.get('/orders/');
+return response.data;
+}
+
+
+export const  deleteOrder=async(id)=>{
+  const response=await axios.delete(`/orders/${id}`);
+  return response.data;
+}
+
+export const updateProduct = async (id,data) => {
+  const response=await axios.patch(`/products/${id}`,data);
+  return response.data;
+ }
+ export const deleteProduct = async (id) => {
+  const response=await axios.delete(`/products/${id}`);
+  return response;
+ }
+
+ export const createCategory=async(category)=>{
+  const response=await axios.post('/categories/',category);
+  return response.data;
+
+}
+export const updateCategory=async(id,category)=>{
+  
+  const response=await axios.put(`/categories/${id}`,{name:category});
+ 
+  return response.data;
+
+}
+export const deleteCategory=async(id)=>{
+  const response=await axios.delete(`/categories/${id}`);
+  return response.data;
+
+}
+export const deleteUser =async(id)=>{
+  const response=await axios.delete(`/admin/users/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`
+      }
+    }
+  );
+  return response.data;
+}
+export const addProduct = async (data) => {
+  const response = await axios.post('/products', data);
+  return response.data;
+}
 

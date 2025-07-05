@@ -29,7 +29,7 @@ const Register = () => {
       const response = await axios.post('/auth/register', values);
       if (response) {
          toast.success('Registration successful!');
-        navigate('/verify-otp');
+         navigate('/verify-otp');
       }
     } catch (error) {
       toast.error('An error occurred during registration');

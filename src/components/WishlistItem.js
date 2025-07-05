@@ -21,12 +21,12 @@ const WishlistItem = ({ item, onRemove ,onMoveToCart}) => {
       const response = await addToCart(
          item._id
       );
-
-      if (response.status === 200 || response.status === 201 || response.success===true) {
+      console.log("responsr",response.data);
+      if (response) {
         console.log(response);
         toast.success('Product moved to cart');
         onRemove(item._id);
-        onMoveToCart(item._id);
+        
       } else {
         toast.error('Failed to move product to cart');
       }

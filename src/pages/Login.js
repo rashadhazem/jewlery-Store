@@ -21,12 +21,28 @@ const Login = () => {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const response = await axios.post('/auth/login', values);
+     
+      if(response.data.success===true){
       localStorage.setItem('token', response.data.token);
-      console.log(response);
       localStorage.setItem('user', JSON.stringify(response.data.user));
+      console.log(response.data.user.isAdmin);
+      toast.success(response.data.message || 'Login successful!');
+      if(response.data.user.isAdmin === true){
+        navigate('/admin');
+      }else{
       navigate('/');
+    }
+    }
+      else {
+        toast.error(response.data.message || 'Login failed');
+      }
+      
     } catch (error) {
-      toast.error('An error occurred during login');
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('An unexpected error occurred. Please try again.');
+      }
     } finally {
       setSubmitting(false);
     }

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Box, Typography, Button, Grid, Card, CardMedia, CardContent,
   CardActions, Container, Chip, IconButton, Modal, Backdrop, Fade,
-  Paper, Select, MenuItem, InputLabel, FormControl, styled
+   styled
 } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -11,14 +11,9 @@ import {
   ShoppingCart,
   Favorite,
   Diamond,
-  Watch,
   LocalOffer,
-  Star,
   ArrowForward,
-  Circle,
-  AccountTree,
-  Hearing,
-  Cable
+
 } from '@mui/icons-material';
 import CategoryIcon from '@mui/icons-material/Category';
 import InventoryIcon from '@mui/icons-material/Inventory';

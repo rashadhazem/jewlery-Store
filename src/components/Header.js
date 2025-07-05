@@ -1,5 +1,11 @@
-import {React,useEffect} from 'react';
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
+import React, { useEffect } from 'react';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Box
+} from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Diamond,
@@ -32,6 +38,8 @@ const Header = () => {
     navigate('/login');
   };
 
+  const isAdmin = user && user.isAdmin === true;
+
   return (
     <AppBar
       position="static"
@@ -47,31 +55,36 @@ const Header = () => {
           </Link>
         </Typography>
 
-        <Box sx={{ display: 'flex', gap: 4 }}> {/* gap controls space between buttons */}
-          <Button color="inherit" component={Link} to="/products" startIcon={<Storefront />}>
-            Products
-          </Button>
-
+        <Box sx={{ display: 'flex', gap: 4 }}>
           {user ? (
-            <>
-              <Button color="inherit" component={Link} to="/cart" startIcon={<ShoppingCart />}>
-                Cart
-              </Button>
-              <Button color="inherit" component={Link} to="/wishlist" startIcon={<Favorite />}>
-                Favorite
-              </Button>
-              <Button color="inherit" component={Link} to="/orders" startIcon={<ListAlt />}>
-                Orders
-              </Button>
-              {user.role === 'admin' && (
-                <Button color="inherit" component={Link} to="/admin/dashboard" startIcon={<Dashboard />}>
+            isAdmin ? (
+              <>
+                <Button color="inherit" component={Link} to="/admin/" startIcon={<Dashboard />}>
                   Dashboard
                 </Button>
-              )}
-              <Button color="inherit" onClick={handleLogout} startIcon={<Logout />}>
-                Logout
-              </Button>
-            </>
+                <Button color="inherit" onClick={handleLogout} startIcon={<Logout />}>
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button color="inherit" component={Link} to="/products" startIcon={<Storefront />}>
+                  Products
+                </Button>
+                <Button color="inherit" component={Link} to="/cart" startIcon={<ShoppingCart />}>
+                  Cart
+                </Button>
+                <Button color="inherit" component={Link} to="/wishlist" startIcon={<Favorite />}>
+                  Favorite
+                </Button>
+                <Button color="inherit" component={Link} to="/orders" startIcon={<ListAlt />}>
+                  Orders
+                </Button>
+                <Button color="inherit" onClick={handleLogout} startIcon={<Logout />}>
+                  Logout
+                </Button>
+              </>
+            )
           ) : (
             <>
               <Button color="inherit" component={Link} to="/login" startIcon={<Login />}>
